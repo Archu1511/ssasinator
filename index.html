@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SaaS Validator App</title>
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet" />
+  <style>
+    :root {
+      --white: #f8fafc;
+      --royal-blue: #2563eb;
+      --yellow: #ffe066;
+      --gray: #e6e9f0;
+      --shadow-light: #ffffff;
+      --shadow-dark: #c8c9ce;
+      --text-main: #22223b;
+      --text-secondary: #6c6c80;
+      --sidebar-width: 320px;
+    }
+    [data-theme="dark"] {
+      --white: #181a20;
+      --royal-blue: #2563eb;
+      --yellow: #ffe066;
+      --gray: #23263a;
+      --shadow-light: #23263a;
+      --shadow-dark: #10111a;
+      --text-main: #f8fafc;
+      --text-secondary: #bfc2c7;
+    }
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', 'Arial', sans-serif;
+      background: var(--gray);
+      color: var(--text-main);
+      transition: background 0.3s, color 0.3s;
+      box-sizing: border-box;
+    }
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      position: relative;
+      overflow-x: hidden;
+    }
+    .app-header {
+      width: 100vw;
+      max-width: 100vw;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 24px 32px 0 32px;
+      box-sizing: border-box;
+      position: relative;
+      z-index: 10;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: var(--royal-blue);
+      letter-spacing: 1px;
+      gap: 12px;
+      background: var(--white);
+      border-radius: 18px;
+      box-shadow: 8px 8px 24px var(--shadow-dark), -8px -8px 24px var(--shadow-light);
+      padding: 10px 24px 10px 18px;
+      user-select: none;
+    }
+    .logo i {
+      font-size: 2.2rem;
+      color: var(--yellow);
+      margin-right: 6px;
+    }
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+    .theme-toggle, .history-toggle {
+      background: var(--white);
+      border: none;
+      border-radius: 50%;
+      box-shadow: 4px 4px 12px var(--shadow-dark), -4px -4px 12px var(--shadow-light);
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 1.5rem;
+      color: var(--royal-blue);
+      transition: box-shadow 0.2s, background 0.3s;
+      outline: none;
+    }
+    .theme-toggle:active, .history-toggle:active {
+      box-shadow: 2px 2px 6px var(--shadow-dark), -2px -2px 6px var(--shadow-light);
+    }
+    /* Sidebar */
+    .sidebar {
+      position: fixed;
+      top: 0;
+      right: -340px;
+      width: var(--sidebar-width);
+      height: 100vh;
+      background: var(--white);
+      box-shadow: -8px 0 32px var(--shadow-dark), 8px 0 32px var(--shadow-light);
+      z-index: 100;
+      transition: right 0.35s cubic-bezier(.77,0,.18,1);
+      display: flex;
+      flex-direction: column;
+      padding: 32px 24px 24px 24px;
+      box-sizing: border-box;
+    }
+    .sidebar.open {
+      right: 0;
+    }
+    .sidebar-header {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: var(--royal-blue);
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .sidebar-history-list {
+      flex: 1;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+    .sidebar-history-list ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .sidebar-history-list li {
+      background: var(--gray);
+      margin-bottom: 12px;
+      padding: 12px 16px;
+      border-radius: 12px;
+      box-shadow: 4px 4px 12px var(--shadow-dark), -4px -4px 12px var(--shadow-light);
+      color: var(--text-main);
+      font-size: 1rem;
+      word-break: break-word;
+    }
+    .sidebar-close {
+      background: none;
+      border: none;
+      color: var(--royal-blue);
+      font-size: 1.5rem;
+      cursor: pointer;
+      margin-left: auto;
+      margin-bottom: 12px;
+      outline: none;
+    }
+    /* Main Content */
+    .main-content {
+      width: 100vw;
+      max-width: 520px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 48px 16px 0 16px;
+      box-sizing: border-box;
+      z-index: 2;
+    }
+    .validator-form {
+      width: 100%;
+      background: var(--white);
+      border-radius: 32px;
+      box-shadow: 8px 8px 24px var(--shadow-dark), -8px -8px 24px var(--shadow-light);
+      padding: 40px 32px 32px 32px;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 28px;
+      margin-top: 32px;
+    }
+    .form-label {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--royal-blue);
+      margin-bottom: 10px;
+      letter-spacing: 0.5px;
+    }
+    .form-textarea {
+      width: 100%;
+      min-height: 110px;
+      max-height: 220px;
+      resize: vertical;
+      border: none;
+      border-radius: 18px;
+      background: var(--gray);
+      box-shadow: 4px 4px 12px var(--shadow-dark), -4px -4px 12px var(--shadow-light);
+      padding: 18px 16px;
+      font-size: 1.1rem;
+      color: var(--text-main);
+      outline: none;
+      transition: box-shadow 0.2s;
+    }
+    .form-textarea:focus {
+      box-shadow: 0 0 0 2px var(--royal-blue), 4px 4px 12px var(--shadow-dark), -4px -4px 12px var(--shadow-light);
+    }
+    .form-style-btns {
+      display: flex;
+      gap: 18px;
+      justify-content: center;
+    }
+    .style-btn {
+      flex: 1 1 0;
+      background: var(--gray);
+      color: var(--royal-blue);
+      border: none;
+      border-radius: 16px;
+      box-shadow: 4px 4px 12px var(--shadow-dark), -4px -4px 12px var(--shadow-light);
+      font-size: 1.1rem;
+      font-weight: 600;
+      padding: 14px 0;
+      cursor: pointer;
+      transition: box-shadow 0.2s, background 0.2s, color 0.2s;
+      outline: none;
+    }
+    .style-btn.selected, .style-btn:active {
+      background: var(--royal-blue);
+      color: var(--white);
+      box-shadow: 0 0 0 2px var(--yellow), 4px 4px 12px var(--shadow-dark), -4px -4px 12px var(--shadow-light);
+    }
+    .form-search-btn {
+      background: var(--yellow);
+      color: #22223b;
+      border: none;
+      border-radius: 18px;
+      box-shadow: 4px 4px 12px var(--shadow-dark), -4px -4px 12px var(--shadow-light);
+      font-size: 1.2rem;
+      font-weight: 700;
+      padding: 16px 0;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: box-shadow 0.2s, background 0.2s, color 0.2s;
+      outline: none;
+    }
+    .form-search-btn:active {
+      background: var(--royal-blue);
+      color: var(--yellow);
+      box-shadow: 0 0 0 2px var(--yellow), 4px 4px 12px var(--shadow-dark), -4px -4px 12px var(--shadow-light);
+    }
+    /* Responsive */
+    @media (max-width: 700px) {
+      .main-content {
+        max-width: 100vw;
+        padding: 32px 4vw 0 4vw;
+      }
+      .validator-form {
+        padding: 24px 8px 18px 8px;
+        border-radius: 18px;
+      }
+      .app-header {
+        padding: 18px 8px 0 8px;
+      }
+      .logo {
+        font-size: 1.3rem;
+        padding: 8px 12px 8px 10px;
+        border-radius: 12px;
+      }
+      .theme-toggle, .history-toggle {
+        width: 38px;
+        height: 38px;
+        font-size: 1.1rem;
+      }
+      .sidebar {
+        width: 90vw;
+        min-width: 0;
+        padding: 18px 8px 8px 8px;
+      }
+    }
+    @media (max-width: 400px) {
+      .main-content {
+        padding: 12px 2vw 0 2vw;
+      }
+      .validator-form {
+        padding: 10px 2px 8px 2px;
+      }
+    }
+  </style>
+</head>
+<body data-theme="light">
+  <header class="app-header">
+    <div class="logo"><i class="ri-poker-hearts-line"></i> SaaS Validator</div>
+    <div class="header-actions">
+      <button class="theme-toggle" aria-label="Toggle dark/light mode"><i class="ri-moon-clear-line"></i></button>
+      <button class="history-toggle" aria-label="Show history"><i class="ri-history-line"></i></button>
+    </div>
+  </header>
+  <aside class="sidebar" id="sidebar">
+    <button class="sidebar-close" aria-label="Close history"><i class="ri-close-line"></i></button>
+    <div class="sidebar-header"><i class="ri-history-line"></i> Search History</div>
+    <div class="sidebar-history-list">
+      <ul id="history-list">
+        <!-- Searched ideas will appear here -->
+      </ul>
+    </div>
+  </aside>
+  <main class="main-content">
+    <form class="validator-form" autocomplete="off">
+      <label for="idea" class="form-label">Describe your startup idea</label>
+      <textarea id="idea" class="form-textarea" placeholder="Type your SaaS idea here..." required></textarea>
+      <div class="form-style-btns">
+        <button type="button" class="style-btn selected" id="btn-professional">Professional</button>
+        <button type="button" class="style-btn" id="btn-fun">Fun</button>
+      </div>
+      <button type="submit" class="form-search-btn">Search</button>
+    </form>
+  </main>
+  <!-- Minimal JS for theme and sidebar toggling, no business logic -->
+  <script>
+    // Theme toggle
+    const themeToggle = document.querySelector('.theme-toggle');
+    const body = document.body;
+    let dark = false;
+    themeToggle.addEventListener('click', () => {
+      dark = !dark;
+      body.setAttribute('data-theme', dark ? 'dark' : 'light');
+      themeToggle.innerHTML = dark ? '<i class="ri-sun-line"></i>' : '<i class="ri-moon-clear-line"></i>';
+    });
+    // Sidebar toggle
+    const sidebar = document.getElementById('sidebar');
+    const historyToggle = document.querySelector('.history-toggle');
+    const sidebarClose = document.querySelector('.sidebar-close');
+    historyToggle.addEventListener('click', () => {
+      sidebar.classList.add('open');
+    });
+    sidebarClose.addEventListener('click', () => {
+      sidebar.classList.remove('open');
+    });
+    // Style button toggle
+    const btnProfessional = document.getElementById('btn-professional');
+    const btnFun = document.getElementById('btn-fun');
+    btnProfessional.addEventListener('click', (e) => {
+      e.preventDefault();
+      btnProfessional.classList.add('selected');
+      btnFun.classList.remove('selected');
+    });
+    btnFun.addEventListener('click', (e) => {
+      e.preventDefault();
+      btnFun.classList.add('selected');
+      btnProfessional.classList.remove('selected');
+    });
+  </script>
+</body>
+</html>

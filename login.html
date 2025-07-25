@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login & Register</title>
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet" />
+  <style>
+    :root {
+      --white: #f8fafc;
+      --royal-blue: #2563eb;
+      --yellow: #ffe066;
+      --gray: #e6e9f0;
+      --shadow-light: #ffffff;
+      --shadow-dark: #c8c9ce;
+      --text-main: #22223b;
+      --text-secondary: #6c6c80;
+    }
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', 'Arial', sans-serif;
+      background: var(--gray);
+      color: var(--text-main);
+      transition: background 0.3s, color 0.3s;
+      box-sizing: border-box;
+    }
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow-x: hidden;
+    }
+    .auth-container {
+      background: var(--white);
+      border-radius: 32px;
+      box-shadow: 8px 8px 24px var(--shadow-dark), -8px -8px 24px var(--shadow-light);
+      padding: 48px 40px 32px 40px;
+      width: 100%;
+      max-width: 400px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 24px;
+    }
+    .auth-toggle {
+      display: flex;
+      gap: 0;
+      width: 100%;
+      margin-bottom: 18px;
+    }
+    .toggle-btn {
+      flex: 1 1 0;
+      background: var(--gray);
+      color: var(--royal-blue);
+      border: none;
+      border-radius: 16px 16px 0 0;
+      box-shadow: 4px 4px 12px var(--shadow-dark), -4px -4px 12px var(--shadow-light);
+      font-size: 1.1rem;
+      font-weight: 600;
+      padding: 14px 0;
+      cursor: pointer;
+      transition: box-shadow 0.2s, background 0.2s, color 0.2s;
+      outline: none;
+    }
+    .toggle-btn.selected, .toggle-btn:active {
+      background: var(--royal-blue);
+      color: var(--white);
+      box-shadow: 0 0 0 2px var(--yellow), 4px 4px 12px var(--shadow-dark), -4px -4px 12px var(--shadow-light);
+    }
+    .auth-title {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--royal-blue);
+      margin-bottom: 12px;
+      letter-spacing: 1px;
+      text-align: center;
+    }
+    .auth-form {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      align-items: stretch;
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .form-label {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--royal-blue);
+      margin-bottom: 2px;
+      letter-spacing: 0.5px;
+    }
+    .form-input {
+      width: 100%;
+      border: none;
+      border-radius: 14px;
+      background: var(--gray);
+      box-shadow: 4px 4px 12px var(--shadow-dark), -4px -4px 12px var(--shadow-light);
+      padding: 14px 14px;
+      font-size: 1.05rem;
+      color: var(--text-main);
+      outline: none;
+      transition: box-shadow 0.2s;
+    }
+    .form-input:focus {
+      box-shadow: 0 0 0 2px var(--royal-blue), 4px 4px 12px var(--shadow-dark), -4px -4px 12px var(--shadow-light);
+    }
+    .form-btn {
+      background: var(--yellow);
+      color: #22223b;
+      border: none;
+      border-radius: 16px;
+      box-shadow: 4px 4px 12px var(--shadow-dark), -4px -4px 12px var(--shadow-light);
+      font-size: 1.15rem;
+      font-weight: 700;
+      padding: 14px 0;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: box-shadow 0.2s, background 0.2s, color 0.2s;
+      outline: none;
+    }
+    .form-btn:active {
+      background: var(--royal-blue);
+      color: var(--yellow);
+      box-shadow: 0 0 0 2px var(--yellow), 4px 4px 12px var(--shadow-dark), -4px -4px 12px var(--shadow-light);
+    }
+    .auth-footer {
+      margin-top: 10px;
+      text-align: center;
+      color: var(--text-secondary);
+      font-size: 0.98rem;
+    }
+    /* Responsive */
+    @media (max-width: 500px) {
+      .auth-container {
+        padding: 24px 8px 18px 8px;
+        border-radius: 18px;
+        max-width: 98vw;
+      }
+      .auth-title {
+        font-size: 1.3rem;
+      }
+      .toggle-btn {
+        font-size: 1rem;
+        padding: 10px 0;
+        border-radius: 10px 10px 0 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="auth-container">
+    <div class="auth-toggle">
+      <button class="toggle-btn selected" id="login-toggle">Login</button>
+      <button class="toggle-btn" id="register-toggle">Register</button>
+    </div>
+    <div id="login-form-section">
+      <div class="auth-title">Login</div>
+      <form class="auth-form" autocomplete="off">
+        <div class="form-group">
+          <label for="login-username" class="form-label">Username</label>
+          <input type="text" id="login-username" class="form-input" placeholder="Enter your username" required />
+        </div>
+        <div class="form-group">
+          <label for="login-password" class="form-label">Password</label>
+          <input type="password" id="login-password" class="form-input" placeholder="Enter your password" required />
+        </div>
+        <button type="submit" class="form-btn">Login</button>
+      </form>
+      <div class="auth-footer">Don't have an account? <span style="color:var(--royal-blue);cursor:pointer;" id="to-register">Register</span></div>
+    </div>
+    <div id="register-form-section" style="display:none;">
+      <div class="auth-title">Register</div>
+      <form class="auth-form" autocomplete="off">
+        <div class="form-group">
+          <label for="register-username" class="form-label">Username</label>
+          <input type="text" id="register-username" class="form-input" placeholder="Choose a username" required />
+        </div>
+        <div class="form-group">
+          <label for="register-email" class="form-label">Email</label>
+          <input type="email" id="register-email" class="form-input" placeholder="Enter your email" required />
+        </div>
+        <div class="form-group">
+          <label for="register-password" class="form-label">Password</label>
+          <input type="password" id="register-password" class="form-input" placeholder="Create a password" required />
+        </div>
+        <button type="submit" class="form-btn">Register</button>
+      </form>
+      <div class="auth-footer">Already have an account? <span style="color:var(--royal-blue);cursor:pointer;" id="to-login">Login</span></div>
+    </div>
+  </div>
+  <script>
+    // Toggle between login and register
+    const loginToggle = document.getElementById('login-toggle');
+    const registerToggle = document.getElementById('register-toggle');
+    const loginFormSection = document.getElementById('login-form-section');
+    const registerFormSection = document.getElementById('register-form-section');
+    const toRegister = document.getElementById('to-register');
+    const toLogin = document.getElementById('to-login');
+    loginToggle.addEventListener('click', () => {
+      loginToggle.classList.add('selected');
+      registerToggle.classList.remove('selected');
+      loginFormSection.style.display = '';
+      registerFormSection.style.display = 'none';
+    });
+    registerToggle.addEventListener('click', () => {
+      registerToggle.classList.add('selected');
+      loginToggle.classList.remove('selected');
+      registerFormSection.style.display = '';
+      loginFormSection.style.display = 'none';
+    });
+    toRegister.addEventListener('click', () => {
+      registerToggle.classList.add('selected');
+      loginToggle.classList.remove('selected');
+      registerFormSection.style.display = '';
+      loginFormSection.style.display = 'none';
+    });
+    toLogin.addEventListener('click', () => {
+      loginToggle.classList.add('selected');
+      registerToggle.classList.remove('selected');
+      loginFormSection.style.display = '';
+      registerFormSection.style.display = 'none';
+    });
+  </script>
+</body>
+</html>
